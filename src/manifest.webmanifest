@@ -1,0 +1,22 @@
+{
+  "name": "Best Timer",
+  "short_name": "BTimer",
+  "theme_color": "#ffb6de",
+  "background_color": "#ffb6de",
+  "display": "minimal-ui",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

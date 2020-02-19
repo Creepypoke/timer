@@ -1,11 +1,24 @@
+html,
+body,
+.main {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+#app {
+  background-color: #ffb6de;
+  color: white;
+}
+
 h1 {
   color: hotpink;
   font-family: cursive;
+  text-align: center;
 }
 
 .timer {
-  font-variant-numeric: tabular-nums;
-  color: hotpink;
+  margin-bottom: 4rem;
 }
 
 .timer__values,
@@ -16,7 +29,17 @@ h1 {
   align-items: center;
 }
 
-.timer__values > div,
+.timer__values > .timer__values_cell,
 .timer__titles > div {
   flex: 0 1 auto;
+}
+
+.timer__values_cell {
+  color: hotpink;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.timer__values_cell + .timer__values_cell {
+  margin-left: 1.4rem;
 }

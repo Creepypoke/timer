@@ -1,5 +1,6 @@
-import { Elm } from './Main.elm'
+import { Elm } from "./Main.elm";
+const swName = "/worker.js";
 
 Elm.Main.init({
-  node: document.querySelector('main#app')
-})
+  node: document.querySelector("main#app")
+});

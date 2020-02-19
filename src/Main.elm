@@ -114,7 +114,7 @@ toStringIso8601WithoutTime time =
 
 view : Model -> Html Msg
 view model =
-    div []
+    div [ class "main" ]
         [ h1 [] [ text "Best timer"]
             , viewTimer model.time model.smokeFreeTimestamp
         , div [] [
@@ -167,9 +167,9 @@ viewTimer time smokeFreeTimestamp =
     in
     div [ class "timer" ]
         [ div [ class "timer__values" ]
-            [ div [] [ div [] [ text days ], div [] [ text "Days" ] ]
-            , div [] [ div [] [ text hour ], div [] [ text "Hours" ] ]
-            , div [] [ div [] [ text minute ], div [] [ text "Minutes" ] ]
-            , div [] [ div [] [ text second ], div [] [ text "Seconds" ] ]
+            [ div [ class "timer__values_cell" ] [ div [] [ text days ], div [] [ text "Days" ] ]
+            , div [ class "timer__values_cell" ] [ div [] [ text hour ], div [] [ text "Hours" ] ]
+            , div [ class "timer__values_cell" ] [ div [] [ text minute ], div [] [ text "Minutes" ] ]
+            , div [ class "timer__values_cell" ] [ div [] [ text second ], div [] [ text "Seconds" ] ]
             ]
         ]

@@ -1,8 +1,9 @@
 {
   "name": "timer",
   "scripts": {
-    "dev": "parcel serve src/index.html",
-    "build": "npx rimraf ./dist && npx parcel build src/index.html",
+    "clean": "npx rimraf ./dist",
+    "dev": "npm run clean && parcel serve src/index.html --https",
+    "build": "npm run clean && npx parcel build src/index.html",
     "start": "npx serve ./dist"
   },
   "devDependencies": {
@@ -10,7 +11,13 @@
     "elm-hot": "^1.1.4",
     "node-elm-compiler": "^5.0.4",
     "parcel-bundler": "^1.12.4",
+    "parcel-plugin-sw-cache": "~0.3.1",
     "rimraf": "~3.0.2",
     "serve": "~11.3.0"
+  },
+  "cache": {
+    "strategy": "inject",
+    "swSrc": "./src/worker.js",
+    "swDest": "service-worker.js"
   }
 }
