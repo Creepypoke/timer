@@ -2,7 +2,7 @@
   "name": "timer",
   "scripts": {
     "dev": "parcel serve src/index.html",
-    "build": "npx rimraf ./dist && parcel build src/index.html",
+    "build": "npx rimraf ./dist && npx parcel build src/index.html",
     "start": "npm run build && npx serve ./dist"
   },
   "devDependencies": {
