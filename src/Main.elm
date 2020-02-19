@@ -4,9 +4,13 @@ import Browser
 import Duration exposing (Duration)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (onInput)
 import Task
 import Time
 import Time.Extra as TimeExtra
+import Iso8601
+import Debug
+import Result
 
 
 
@@ -29,16 +33,9 @@ main =
 type alias Model =
     { zone : Time.Zone
     , time : Time.Posix
+    , smokeFreeTimestamp : Time.Posix -- 22 Jan 2020 18:00
     }
 
-
-smokeFreeTimestamp : Time.Posix
-smokeFreeTimestamp =
-    Time.millisToPosix 1579705200000
-
-
-
--- 22 Jan 2020 18:00
 
 
 millisPerCigarette : Time.Posix
@@ -48,7 +45,7 @@ millisPerCigarette =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model Time.utc (Time.millisToPosix 0)
+    ( Model Time.utc (Time.millisToPosix 0) (Time.millisToPosix 1579705200000)
     , Task.perform AdjustTimeZone Time.here
     )
 
@@ -60,6 +57,7 @@ init _ =
 type Msg
     = Tick Time.Posix
     | AdjustTimeZone Time.Zone
+    | Change String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -72,6 +70,13 @@ update msg model =
 
         AdjustTimeZone newZone ->
             ( { model | zone = newZone }
+            , Cmd.none
+            )
+
+        Change newContent ->
+            ( { model | smokeFreeTimestamp = newContent
+                |> Iso8601.toTime
+                |> (\t -> Result.withDefault model.smokeFreeTimestamp t) }
             , Cmd.none
             )
 
@@ -89,8 +94,8 @@ subscriptions _ =
 -- VIEW
 
 
-getCigarettes : Time.Posix -> String
-getCigarettes time =
+getCigarettes : Time.Posix -> Time.Posix -> String
+getCigarettes time smokeFreeTimestamp =
     time
         |> Time.posixToMillis
         |> (\t -> t - (smokeFreeTimestamp |> Time.posixToMillis))
@@ -99,13 +104,27 @@ getCigarettes time =
         |> String.fromFloat
 
 
+toStringIso8601WithoutTime : Time.Posix -> String
+toStringIso8601WithoutTime time =
+    time
+        |> Iso8601.fromTime
+        |> String.split "T"
+        |> List.head
+        |> Maybe.withDefault ""
+
 view : Model -> Html Msg
 view model =
     div []
-        [ h1 [] [ text "You haven't smoked in " ]
-        , viewTimer model.time
-        , div [] [ text ("Cigarettes not smoked: " ++ getCigarettes model.time) ]
-        , h1 [] [ text "!" ]
+        [ h1 [] [ text "Best timer"]
+            , viewTimer model.time model.smokeFreeTimestamp
+        , div [] [
+            div [] [text "I don't smoke since: "]
+            , input [ placeholder "Text to reverse", value (toStringIso8601WithoutTime model.smokeFreeTimestamp), onInput Change, type_ "date" ] []
+            ]
+        , div [] [
+                h2 [] [text "Additional information"]
+                , div [] [ text ("Cigarettes not smoked: " ++ getCigarettes model.time model.smokeFreeTimestamp) ]
+            ]
         ]
 
 
@@ -117,8 +136,8 @@ formatTimeValue value =
         |> String.padLeft 2 '0'
 
 
-viewTimer : Time.Posix -> Html Msg
-viewTimer time =
+viewTimer : Time.Posix -> Time.Posix -> Html Msg
+viewTimer time smokeFreeTimestamp =
     let
         timeStampLeft =
             Duration.from smokeFreeTimestamp time
