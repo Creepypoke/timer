@@ -1,8 +1,9 @@
 {
   "name": "timer",
   "scripts": {
-    "start": "parcel serve src/index.html",
-    "build": "npx rimraf ./dist/ && parcel build src/index.html"
+    "dev": "parcel serve src/index.html",
+    "build": "npx rimraf ./dist && parcel build src/index.html",
+    "start": "npm run build && npx serve ./dist"
   },
   "devDependencies": {
     "elm": "~0.19.1-3",
