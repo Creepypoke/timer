@@ -2,10 +2,10 @@
   "name": "timer",
   "scripts": {
     "clean": "npx rimraf ./dist",
+    "dev:prepare": "npx rimraf ./crts && openssl genrsa -des3 -passout pass:x -out ./certs/server.pass.key 2048 && openssl rsa -passin pass:x -in ./certs/server.pass.key -out ./certs/server.key && npx rimraf ./certs/server.pass.key && openssl req -new -key ./certs/server.key -out ./certs/server.csr && openssl x509 -req -sha256 -days 365 -in ./certs/server.csr -signkey ./certs/server.key -out ./certs/server.crt",
     "dev": "npm run clean && parcel serve src/index.html --cert ./certs/server.crt --key ./certs/server.key",
     "build": "npm run clean && npx parcel build src/index.html",
-    "start": "npx serve ./dist",
-    "prepare": "npx rimraf ./crts && openssl genrsa -des3 -passout pass:x -out ./certs/server.pass.key 2048 && openssl rsa -passin pass:x -in ./certs/server.pass.key -out ./certs/server.key && npx rimraf ./certs/server.pass.key && openssl req -new -key ./certs/server.key -out ./certs/server.csr && openssl x509 -req -sha256 -days 365 -in ./certs/server.csr -signkey ./certs/server.key -out ./certs/server.crt"
+    "start": "npx serve ./dist"
   },
   "devDependencies": {
     "elm": "~0.19.1-3",
