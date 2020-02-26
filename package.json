@@ -2,8 +2,8 @@
   "name": "timer",
   "scripts": {
     "clean": "npx rimraf ./dist",
-    "dev:prepare": "npx rimraf ./crts && openssl genrsa -des3 -passout pass:x -out ./certs/server.pass.key 2048 && openssl rsa -passin pass:x -in ./certs/server.pass.key -out ./certs/server.key && npx rimraf ./certs/server.pass.key && openssl req -new -key ./certs/server.key -out ./certs/server.csr && openssl x509 -req -sha256 -days 365 -in ./certs/server.csr -signkey ./certs/server.key -out ./certs/server.crt",
-    "dev": "npm run clean && parcel serve src/index.html --cert ./certs/server.crt --key ./certs/server.key",
+    "dev:prepare": "npx rimraf ./certs && ./run.sh",
+    "dev": "npm run clean && parcel serve src/index.html --cert ./certs/localhost.crt --key ./certs/localhost.key",
     "build": "npm run clean && npx parcel build src/index.html",
     "start": "npx serve ./dist"
   },
@@ -17,8 +17,9 @@
     "serve": "~11.3.0"
   },
   "cache": {
+    "swSrc": "./src/sw.js",
     "disablePlugin": false,
-    "inDev": false,
+    "inDev": true,
     "strategy": "inject",
     "clearDist": true
   }
