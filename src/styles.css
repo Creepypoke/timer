@@ -1,18 +1,37 @@
+:root {
+  --color-primary: #ff69b4;
+  --color-secondary: #84ebff;
+  --color-strong-secondary: #39b3ff;
+  --color-super-strong-secondary: #007fcb;
+  --color-white: #efefef;
+  --color-black: #2f2f2f;
+}
+
+.invisible {
+  border: none;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
 html,
 body,
+body > div,
 .main {
-  margin: 0;
-  padding: 0;
   min-height: 100%;
 }
 
-#app {
-  background-color: #ffb6de;
-  color: white;
+body {
+  background-color: var(--color-secondary);
+  color: var(--color-black);
 }
 
 h1 {
-  color: hotpink;
+  color: var(--color-primary);
   font-family: cursive;
   text-align: center;
 }
@@ -21,25 +40,73 @@ h1 {
   margin-bottom: 4rem;
 }
 
-.timer__values,
-.timer__titles {
+.timer__values {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 }
 
-.timer__values > .timer__values_cell,
-.timer__titles > div {
+.timer__values > .timer__values_cell {
   flex: 0 1 auto;
 }
 
 .timer__values_cell {
-  color: hotpink;
   font-variant-numeric: tabular-nums;
   text-align: center;
+  padding: 0.4rem;
+  border-radius: 8px;
+  background-color: var(--color-super-strong-secondary);
+  color: var(--color-white);
+  min-width: 20%;
 }
 
-.timer__values_cell + .timer__values_cell {
-  margin-left: 1.4rem;
+.timer__values_value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.timer__titles_title {
+  font-weight: 600;
+}
+
+.stopSience {
+  display: block;
+  min-height: 3rem;
+  padding: 0.8rem;
+  border-radius: 8px;
+  box-shadow: 0px 0px 16px var(--color-black);
+}
+
+.stopSience:active {
+  box-shadow: inset 0px 0px 4px var(--color-black);
+}
+
+.stopSience_text {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.stopSience_date {
+  font-size: 1.8rem;
+  color: var(--color-strong-secondary);
+}
+
+.additional-information {
+  display: block;
+  margin-top: 20rem;
+}
+
+.additional-information > h2 {
+  text-decoration: underline;
+  color: var(--color-super-strong-secondary);
+}
+
+.additional-information_body {
+  display: none;
+}
+
+.additional-information_indicator:checked + .additional-information_body {
+  display: block;
 }

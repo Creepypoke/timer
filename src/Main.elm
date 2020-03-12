@@ -5,12 +5,10 @@ import Duration exposing (Duration)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
+import Iso8601
+import Result
 import Task
 import Time
-import Time.Extra as TimeExtra
-import Iso8601
-import Debug
-import Result
 
 
 
@@ -35,7 +33,6 @@ type alias Model =
     , time : Time.Posix
     , smokeFreeTimestamp : Time.Posix -- 22 Jan 2020 18:00
     }
-
 
 
 millisPerCigarette : Time.Posix
@@ -74,9 +71,12 @@ update msg model =
             )
 
         Change newContent ->
-            ( { model | smokeFreeTimestamp = newContent
-                |> Iso8601.toTime
-                |> (\t -> Result.withDefault model.smokeFreeTimestamp t) }
+            ( { model
+                | smokeFreeTimestamp =
+                    newContent
+                        |> Iso8601.toTime
+                        |> (\t -> Result.withDefault model.smokeFreeTimestamp t)
+              }
             , Cmd.none
             )
 
@@ -94,14 +94,13 @@ subscriptions _ =
 -- VIEW
 
 
-getCigarettes : Time.Posix -> Time.Posix -> String
+getCigarettes : Time.Posix -> Time.Posix -> Float
 getCigarettes time smokeFreeTimestamp =
     time
         |> Time.posixToMillis
         |> (\t -> t - (smokeFreeTimestamp |> Time.posixToMillis))
         |> toFloat
         |> (\t -> t / (millisPerCigarette |> Time.posixToMillis |> toFloat))
-        |> String.fromFloat
 
 
 toStringIso8601WithoutTime : Time.Posix -> String
@@ -112,18 +111,83 @@ toStringIso8601WithoutTime time =
         |> List.head
         |> Maybe.withDefault ""
 
+
+toPrettyMonth : Time.Month -> String
+toPrettyMonth month =
+    case month of
+        Time.Jan ->
+            "January"
+
+        Time.Feb ->
+            "febrFebruaryuar"
+
+        Time.Mar ->
+            "March"
+
+        Time.Apr ->
+            "April"
+
+        Time.May ->
+            "May 🎂"
+
+        Time.Jun ->
+            "June"
+
+        Time.Jul ->
+            "July"
+
+        Time.Aug ->
+            "August"
+
+        Time.Sep ->
+            "September"
+
+        Time.Oct ->
+            "October"
+
+        Time.Nov ->
+            "November"
+
+        Time.Dec ->
+            "December 🎄"
+
+
 view : Model -> Html Msg
 view model =
+    let
+        isoDateSmokeFree =
+            toStringIso8601WithoutTime model.smokeFreeTimestamp
+
+        smokeFreeYear =
+            model.smokeFreeTimestamp |> Time.toYear model.zone |> String.fromInt
+
+        smokeFreeMonth =
+            model.smokeFreeTimestamp |> Time.toMonth model.zone |> toPrettyMonth
+
+        smokeFreeDays =
+            model.smokeFreeTimestamp |> Time.toDay model.zone |> String.fromInt
+
+        prettyDateSmokeFree =
+            smokeFreeYear ++ " " ++ smokeFreeMonth ++ " " ++ smokeFreeDays
+
+        notSmokedCigarettes =
+            getCigarettes model.time model.smokeFreeTimestamp
+    in
     div [ class "main" ]
-        [ h1 [] [ text "Best timer"]
-            , viewTimer model.time model.smokeFreeTimestamp
-        , div [] [
-            div [] [text "I don't smoke since: "]
-            , input [ placeholder "Text to reverse", value (toStringIso8601WithoutTime model.smokeFreeTimestamp), onInput Change, type_ "date" ] []
+        [ h1 [] [ text "Best timer" ]
+        , viewTimer model.time model.smokeFreeTimestamp
+        , label [ class "stopSience" ]
+            [ div [ class "stopSience_text" ] [ text "🚭 since: " ]
+            , input [ class "stopSience_input invisible", placeholder "Text to reverse", value isoDateSmokeFree, onInput Change, type_ "date" ] []
+            , div [ class "stopSience_date" ] [ text prettyDateSmokeFree ]
             ]
-        , div [] [
-                h2 [] [text "Additional information"]
-                , div [] [ text ("Cigarettes not smoked: " ++ getCigarettes model.time model.smokeFreeTimestamp) ]
+        , label [ class "additional-information" ]
+            [ h2 [] [ text "Additional information" ]
+            , input [ type_ "checkbox", class "additional-information_indicator invisible" ] []
+            , div [ class "additional-information_body" ]
+                [ div [] [ text ("🚬: " ++ (notSmokedCigarettes |> String.fromFloat)) ]
+                , div [] [ text ("💰: " ++ (notSmokedCigarettes * 145 |> String.fromFloat) ++ "₽") ]
+                ]
             ]
         ]
 
@@ -167,9 +231,9 @@ viewTimer time smokeFreeTimestamp =
     in
     div [ class "timer" ]
         [ div [ class "timer__values" ]
-            [ div [ class "timer__values_cell" ] [ div [] [ text days ], div [] [ text "Days" ] ]
-            , div [ class "timer__values_cell" ] [ div [] [ text hour ], div [] [ text "Hours" ] ]
-            , div [ class "timer__values_cell" ] [ div [] [ text minute ], div [] [ text "Minutes" ] ]
-            , div [ class "timer__values_cell" ] [ div [] [ text second ], div [] [ text "Seconds" ] ]
+            [ div [ class "timer__values_cell" ] [ div [ class "timer__values_value" ] [ text days ], div [ class "timer__values_title" ] [ text "Days" ] ]
+            , div [ class "timer__values_cell" ] [ div [ class "timer__values_value" ] [ text hour ], div [ class "timer__values_title" ] [ text "Hours" ] ]
+            , div [ class "timer__values_cell" ] [ div [ class "timer__values_value" ] [ text minute ], div [ class "timer__values_title" ] [ text "Minutes" ] ]
+            , div [ class "timer__values_cell" ] [ div [ class "timer__values_value" ] [ text second ], div [ class "timer__values_title" ] [ text "Seconds" ] ]
             ]
         ]
