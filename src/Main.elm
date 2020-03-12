@@ -186,7 +186,7 @@ view model =
             , input [ type_ "checkbox", class "additional-information_indicator invisible" ] []
             , div [ class "additional-information_body" ]
                 [ div [] [ text ("🚬: " ++ (notSmokedCigarettes |> String.fromFloat)) ]
-                , div [] [ text ("💰: " ++ (notSmokedCigarettes * 145 |> String.fromFloat) ++ "₽") ]
+                , div [] [ text ("💰: " ++ (notSmokedCigarettes * 145 |> String.fromFloat) ++ "RUB") ]
                 ]
             ]
         ]
