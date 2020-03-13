@@ -5,7 +5,7 @@
   --color-super-strong-secondary: #007fcb;
   --color-white: #efefef;
   --color-black: #2f2f2f;
-  --color-pale-primary: rgba(255, 255, 255, 0.9);
+  --color-pale-primary: #f4eff3;
 
   --bump-shadow: 5px 5px 13px rgba(220, 215, 219, 0.9),
     -5px -5px 10px rgba(255, 255, 255, 0.9),
@@ -104,7 +104,6 @@ h1 {
   display: block;
   min-height: 3rem;
   padding: 0.8rem;
-  background-color: #f4eff3;
   box-shadow: var(--bump-shadow);
   border-radius: 24px;
   background-image: url(./assets/icons/ic_point.svg);
