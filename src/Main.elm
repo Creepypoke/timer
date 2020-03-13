@@ -120,7 +120,7 @@ toPrettyMonth month =
             "January"
 
         Time.Feb ->
-            "febrFebruaryuar"
+            "February"
 
         Time.Mar ->
             "March"

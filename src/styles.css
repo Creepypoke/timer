@@ -5,6 +5,19 @@
   --color-super-strong-secondary: #007fcb;
   --color-white: #efefef;
   --color-black: #2f2f2f;
+  --color-pale-primary: rgba(255, 255, 255, 0.9);
+
+  --bump-shadow: 5px 5px 13px rgba(220, 215, 219, 0.9),
+    -5px -5px 10px rgba(255, 255, 255, 0.9),
+    5px -5px 10px rgba(220, 215, 219, 0.2),
+    -5px 5px 10px rgba(220, 215, 219, 0.2),
+    inset -1px -1px 2px rgba(220, 215, 219, 0.5),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.3);
+  --inset-shadow: inset 5px 5px 13px rgba(220, 215, 219, 0.9),
+    inset -5px -5px 10px rgba(255, 255, 255, 0.9),
+    inset 5px -5px 10px rgba(220, 215, 219, 0.2),
+    inset -5px 5px 10px rgba(220, 215, 219, 0.2),
+    -1px -1px 2px rgba(220, 215, 219, 0.5), 1px 1px 2px rgba(255, 255, 255, 0.3);
 }
 
 .invisible {
@@ -25,6 +38,7 @@ body > div,
   min-height: 100%;
   font-family: sans-serif;
   height: 100vh;
+  padding: 0;
 }
 
 body {
@@ -35,6 +49,14 @@ body {
 .main {
   max-width: 375px;
   margin: auto;
+  padding: 24px;
+}
+
+@media screen and (min-width: 400px) {
+  .main {
+    border-radius: 24px;
+    box-shadow: var(--bump-shadow);
+  }
 }
 
 h1 {
@@ -52,7 +74,6 @@ h1 {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--color-super-strong-secondary);
   padding: 0.8rem;
   border-radius: 8px;
 }
@@ -85,12 +106,18 @@ h1 {
   display: block;
   min-height: 3rem;
   padding: 0.8rem;
-  border-radius: 8px;
-  box-shadow: 0px 0px 16px var(--color-black);
+  background-color: #f4eff3;
+  box-shadow: var(--bump-shadow);
+  border-radius: 24px;
+  background-image: url(./assets/icons/ic_point.svg);
+  background-position: 95% center;
+  background-repeat: no-repeat;
+  transition: background-position 0.4s ease-in-out;
 }
 
 .stopSience:active {
-  box-shadow: inset 0px 0px 4px var(--color-black);
+  box-shadow: var(--inset-shadow);
+  background-position: 110% center;
 }
 
 .stopSience_text {
@@ -106,12 +133,21 @@ h1 {
 .additional-information {
   display: block;
   margin-top: 10rem;
+  box-shadow: var(--bump-shadow);
+  padding: 1rem 0.4rem;
+  border-radius: 24px;
+  text-align: cenetr;
+}
+
+.additional-information:active {
+  box-shadow: var(--inset-shadow);
 }
 
 .additional-information > h2 {
   text-decoration: underline;
   color: var(--color-super-strong-secondary);
   text-transform: uppercase;
+  font-size: 1.4rem;
 }
 
 .additional-information_body {
