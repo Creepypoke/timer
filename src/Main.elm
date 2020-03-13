@@ -1,11 +1,14 @@
 module Main exposing (Model, Msg(..), init, main, subscriptions, update, view)
 
 import Browser
+import Debug
 import Duration exposing (Duration)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
 import Iso8601
+import Json.Encode as E
+import PortMain exposing (cache)
 import Result
 import Round
 import Task
@@ -41,9 +44,16 @@ millisPerCigarette =
     Time.millisToPosix 4320000
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
-    ( Model Time.utc (Time.millisToPosix 1579705200000) (Time.millisToPosix 1579705200000)
+init : Maybe Int -> ( Model, Cmd Msg )
+init flag =
+    let
+        verifiedInitDate =
+            flag
+                |> Debug.log "date"
+                |> Maybe.withDefault 1579705200000
+                |> Time.millisToPosix
+    in
+    ( Model Time.utc verifiedInitDate verifiedInitDate
     , Task.perform AdjustTimeZone Time.here
     )
 
@@ -71,14 +81,26 @@ update msg model =
             , Cmd.none
             )
 
-        Change newContent ->
+        Change newDate ->
+            let
+                maybeNewDateToPosix =
+                    newDate |> Iso8601.toTime
+
+                isOk =
+                    maybeNewDateToPosix
+                        |> Result.toMaybe
+            in
             ( { model
                 | smokeFreeTimestamp =
-                    newContent
-                        |> Iso8601.toTime
-                        |> (\t -> Result.withDefault model.smokeFreeTimestamp t)
+                    maybeNewDateToPosix
+                        |> Result.withDefault model.smokeFreeTimestamp
               }
-            , Cmd.none
+            , case isOk of
+                Nothing ->
+                    Cmd.none
+
+                Just time ->
+                    time |> Time.posixToMillis |> E.int |> cache
             )
 
 
