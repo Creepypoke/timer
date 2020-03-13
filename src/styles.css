@@ -23,11 +23,18 @@ body,
 body > div,
 .main {
   min-height: 100%;
+  font-family: sans-serif;
+  height: 100vh;
 }
 
 body {
-  background-color: var(--color-secondary);
+  background-color: var(--color-white);
   color: var(--color-black);
+}
+
+.main {
+  max-width: 375px;
+  margin: auto;
 }
 
 h1 {
@@ -45,6 +52,9 @@ h1 {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  background-color: var(--color-super-strong-secondary);
+  padding: 0.8rem;
+  border-radius: 8px;
 }
 
 .timer__values > .timer__values_cell {
@@ -56,8 +66,8 @@ h1 {
   text-align: center;
   padding: 0.4rem;
   border-radius: 8px;
-  background-color: var(--color-super-strong-secondary);
-  color: var(--color-white);
+  background-color: var(--color-secondary);
+  color: var(--color-super-strong-secondary);
   min-width: 20%;
 }
 
@@ -95,12 +105,13 @@ h1 {
 
 .additional-information {
   display: block;
-  margin-top: 20rem;
+  margin-top: 10rem;
 }
 
 .additional-information > h2 {
   text-decoration: underline;
   color: var(--color-super-strong-secondary);
+  text-transform: uppercase;
 }
 
 .additional-information_body {

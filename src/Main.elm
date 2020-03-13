@@ -7,6 +7,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
 import Iso8601
 import Result
+import Round
 import Task
 import Time
 
@@ -42,7 +43,7 @@ millisPerCigarette =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model Time.utc (Time.millisToPosix 0) (Time.millisToPosix 1579705200000)
+    ( Model Time.utc (Time.millisToPosix 1579705200000) (Time.millisToPosix 1579705200000)
     , Task.perform AdjustTimeZone Time.here
     )
 
@@ -172,6 +173,12 @@ view model =
 
         notSmokedCigarettes =
             getCigarettes model.time model.smokeFreeTimestamp
+
+        notSmokedPacks =
+            (notSmokedCigarettes / 20) |> Round.round 0
+
+        notSpendMoney =
+            (notSmokedCigarettes / 20 * 169) |> Round.round 2
     in
     div [ class "main" ]
         [ h1 [] [ text "Best timer" ]
@@ -185,8 +192,8 @@ view model =
             [ h2 [] [ text "Additional information" ]
             , input [ type_ "checkbox", class "additional-information_indicator invisible" ] []
             , div [ class "additional-information_body" ]
-                [ div [] [ text ("🚬: " ++ (notSmokedCigarettes |> String.fromFloat)) ]
-                , div [] [ text ("💰: " ++ (notSmokedCigarettes * 145 |> String.fromFloat) ++ "RUB") ]
+                [ div [] [ text ("🚬: " ++ (notSmokedCigarettes |> Round.round 4) ++ " (" ++ notSmokedPacks ++ " packs)") ]
+                , div [] [ text ("💰: " ++ notSpendMoney ++ " ₽") ]
                 ]
             ]
         ]
