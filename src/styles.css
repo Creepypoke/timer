@@ -60,9 +60,32 @@ body {
 }
 
 h1 {
-  color: var(--color-primary);
-  font-family: cursive;
+  animation: blinking 10s ease-in-out infinite;
+  font-size: 3rem;
+  background-color: var(--color-super-strong-secondary);
+  color: transparent;
+  text-shadow: 1px 1px 4px var(--color-pale-primary);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
   text-align: center;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+@keyframes blinking {
+  0% {
+    background-color: var(--color-super-strong-secondary);
+  }
+  50% {
+    background-color: var(--color-strong-secondary);
+  }
+  75% {
+    background-color: var(--color-primary);
+  }
+  100% {
+    background-color: var(--color-strong-strong-secondary);
+  }
 }
 
 .timer {
@@ -93,7 +116,12 @@ h1 {
 .timer__values_value {
   font-size: 1.8rem;
   font-weight: 800;
-  color: var(--color-primary);
+  background-color: #565656;
+  color: transparent;
+  text-shadow: 2px 2px 3px rgba(255, 255, 255, 0.5);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
 }
 
 .timer__values_title {
@@ -185,6 +213,7 @@ h1 {
   box-shadow: var(--bump-shadow);
   padding: 1rem 0.8rem;
   border-radius: 24px;
+  font-size: 1.2rem;
 }
 
 .additional-information:focus,
@@ -193,12 +222,17 @@ h1 {
 }
 
 .additional-information > h2 {
-  text-decoration: underline;
   color: var(--color-super-strong-secondary);
   text-transform: uppercase;
   font-size: 1.3rem;
   text-align: center;
   pointer-events: none;
+  background-color: #565656;
+  color: transparent;
+  text-shadow: 2px 2px 3px rgba(255, 255, 255, 0.5);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
 }
 
 .additional-information_body {
