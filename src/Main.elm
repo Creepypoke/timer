@@ -175,7 +175,7 @@ view model =
             getCigarettes model.time model.smokeFreeTimestamp
 
         notSmokedPacks =
-            (notSmokedCigarettes / 20) |> Round.round 0
+            (notSmokedCigarettes / 20) |> Round.round 1
 
         notSpendMoney =
             (notSmokedCigarettes / 20 * 169) |> Round.round 2
