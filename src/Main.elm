@@ -1,7 +1,6 @@
 module Main exposing (Model, Msg(..), init, main, subscriptions, update, view)
 
 import Browser
-import Debug
 import Duration exposing (Duration)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -49,7 +48,6 @@ init flag =
     let
         verifiedInitDate =
             flag
-                |> Debug.log "date"
                 |> Maybe.withDefault 1579705200000
                 |> Time.millisToPosix
     in
