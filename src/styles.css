@@ -74,8 +74,6 @@ h1 {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 0.8rem;
-  border-radius: 8px;
 }
 
 .timer__values > .timer__values_cell {
@@ -115,6 +113,7 @@ h1 {
   transition: background-position 0.4s ease-in-out;
 }
 
+.stopSience:focus-within,
 .stopSience:active {
   box-shadow: var(--inset-shadow);
   background-position: 110% center;
@@ -130,6 +129,25 @@ h1 {
   color: var(--color-strong-secondary);
 }
 
+@media screen and (min-width: 400px) {
+  .stopSience:focus-within > .stopSience_input {
+    border: none;
+    clip: initial;
+    height: auto;
+    margin: 0;
+    overflow: initial;
+    padding: 0;
+    position: relative;
+    width: 100%;
+    display: block;
+    font-size: 1.8rem;
+  }
+
+  .stopSience:focus-within > .stopSience_date {
+    display: none;
+  }
+}
+
 .additional-information {
   display: block;
   margin-top: 10rem;
@@ -138,6 +156,7 @@ h1 {
   border-radius: 24px;
 }
 
+.additional-information:focus,
 .additional-information:active {
   box-shadow: var(--inset-shadow);
 }
@@ -146,7 +165,7 @@ h1 {
   text-decoration: underline;
   color: var(--color-super-strong-secondary);
   text-transform: uppercase;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   text-align: center;
 }
 
