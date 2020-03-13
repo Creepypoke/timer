@@ -111,6 +111,8 @@ h1 {
   background-position: 95% center;
   background-repeat: no-repeat;
   transition: background-position 0.4s ease-in-out;
+  height: 4.6rem;
+  overflow: hidden;
 }
 
 .stopSience:focus-within,
@@ -119,14 +121,30 @@ h1 {
   background-position: 110% center;
 }
 
+.stopSience_text,
+.stopSience_date {
+  position: relative;
+  opacity: 1;
+  transition: opacity 0.4s linear, bottom 0.4s ease-in-out, top 0.4s ease-in-out;
+}
+
 .stopSience_text {
   font-size: 1.4rem;
   font-weight: 600;
+  pointer-events: none;
+  top: 0;
 }
 
 .stopSience_date {
   font-size: 1.8rem;
   color: var(--color-strong-secondary);
+  pointer-events: none;
+  bottom: 0;
+}
+
+.stopSience_input {
+  transition: opacity 0.4s linear;
+  opacity: 0;
 }
 
 @media screen and (min-width: 400px) {
@@ -141,10 +159,20 @@ h1 {
     width: 100%;
     display: block;
     font-size: 1.8rem;
+    opacity: 1;
+  }
+
+  .stopSience:focus-within > .stopSience_text,
+  .stopSience:focus-within > .stopSience_date {
+    opacity: 0;
+  }
+
+  .stopSience:focus-within > .stopSience_text {
+    top: -4rem;
   }
 
   .stopSience:focus-within > .stopSience_date {
-    display: none;
+    bottom: -4rem;
   }
 }
 
@@ -167,6 +195,7 @@ h1 {
   text-transform: uppercase;
   font-size: 1.3rem;
   text-align: center;
+  pointer-events: none;
 }
 
 .additional-information_body {
