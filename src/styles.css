@@ -84,7 +84,7 @@ h1 {
     background-color: var(--color-primary);
   }
   100% {
-    background-color: var(--color-strong-strong-secondary);
+    background-color: var(--color-super-strong-secondary);
   }
 }
 
