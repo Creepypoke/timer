@@ -1,13 +1,12 @@
 module Main exposing (Model, Msg(..), init, main, subscriptions, update, view)
 
 import Browser
-import Duration exposing (Duration)
+import Duration
 import Html exposing (..)
-import Html.Attributes exposing (..)
+import Html.Attributes exposing (class, placeholder, type_, value)
 import Html.Events exposing (onInput)
 import Iso8601
-import Json.Encode as E
-import PortMain exposing (cache)
+import PortMain
 import Result
 import Round
 import Task
@@ -80,25 +79,13 @@ update msg model =
             )
 
         Change newDate ->
-            let
-                maybeNewDateToPosix =
-                    newDate |> Iso8601.toTime
-
-                isOk =
-                    maybeNewDateToPosix
-                        |> Result.toMaybe
-            in
             ( { model
                 | smokeFreeTimestamp =
-                    maybeNewDateToPosix
+                    newDate
+                        |> Iso8601.toTime
                         |> Result.withDefault model.smokeFreeTimestamp
               }
-            , case isOk of
-                Nothing ->
-                    Cmd.none
-
-                Just time ->
-                    time |> Time.posixToMillis |> E.int |> cache
+            , PortMain.maybeCache newDate
             )
 
 
@@ -190,32 +177,16 @@ view model =
 
         prettyDateSmokeFree =
             smokeFreeYear ++ " " ++ smokeFreeMonth ++ " " ++ smokeFreeDays
-
-        notSmokedCigarettes =
-            getCigarettes model.time model.smokeFreeTimestamp
-
-        notSmokedPacks =
-            (notSmokedCigarettes / 20) |> Round.round 1
-
-        notSpendMoney =
-            (notSmokedCigarettes / 20 * 169) |> Round.round 2
     in
     div [ class "main" ]
         [ h1 [] [ text "Best timer" ]
         , viewTimer model.time model.smokeFreeTimestamp
-        , label [ class "stopSience" ]
-            [ div [ class "stopSience_text" ] [ text "🚭 since: " ]
-            , input [ class "stopSience_input invisible", placeholder "Text to reverse", value isoDateSmokeFree, onInput Change, type_ "date" ] []
-            , div [ class "stopSience_date" ] [ text prettyDateSmokeFree ]
+        , label [ class "stopSince" ]
+            [ div [ class "stopSince_text" ] [ text "🚭 since: " ]
+            , input [ class "stopSince_input invisible", placeholder "Text to reverse", value isoDateSmokeFree, onInput Change, type_ "date" ] []
+            , div [ class "stopSince_date" ] [ text prettyDateSmokeFree ]
             ]
-        , label [ class "additional-information" ]
-            [ h2 [] [ text "Additional information" ]
-            , input [ type_ "checkbox", class "additional-information_indicator invisible" ] []
-            , div [ class "additional-information_body" ]
-                [ div [] [ text ("🚬: " ++ (notSmokedCigarettes |> Round.round 4) ++ " (" ++ notSmokedPacks ++ " packs)") ]
-                , div [] [ text ("💰: " ++ notSpendMoney ++ " ₽") ]
-                ]
-            ]
+        , viewAdditionalBlock model.time model.smokeFreeTimestamp
         ]
 
 
@@ -262,5 +233,27 @@ viewTimer time smokeFreeTimestamp =
             , div [ class "timer__values_cell" ] [ div [ class "timer__values_value" ] [ text hour ], div [ class "timer__values_title" ] [ text "Hours" ] ]
             , div [ class "timer__values_cell" ] [ div [ class "timer__values_value" ] [ text minute ], div [ class "timer__values_title" ] [ text "Minutes" ] ]
             , div [ class "timer__values_cell" ] [ div [ class "timer__values_value" ] [ text second ], div [ class "timer__values_title" ] [ text "Seconds" ] ]
+            ]
+        ]
+
+
+viewAdditionalBlock : Time.Posix -> Time.Posix -> Html Msg
+viewAdditionalBlock time smokeFreeTimestamp =
+    let
+        notSmokedCigarettes =
+            getCigarettes time smokeFreeTimestamp
+
+        notSmokedPacks =
+            (notSmokedCigarettes / 20) |> Round.round 1
+
+        notSpendMoney =
+            (notSmokedCigarettes / 20 * 169) |> Round.round 2
+    in
+    label [ class "additional-information" ]
+        [ h2 [] [ text "Additional information" ]
+        , input [ type_ "checkbox", class "additional-information_indicator invisible" ] []
+        , div [ class "additional-information_body" ]
+            [ div [] [ text ("🚬: " ++ (notSmokedCigarettes |> Round.round 4) ++ " (" ++ notSmokedPacks ++ " packs)") ]
+            , div [] [ text ("💰: " ++ notSpendMoney ++ " ₽") ]
             ]
         ]

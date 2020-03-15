@@ -131,7 +131,7 @@ h1 {
   text-transform: uppercase;
 }
 
-.stopSience {
+.stopSince {
   display: block;
   min-height: 3rem;
   padding: 0.8rem;
@@ -145,20 +145,20 @@ h1 {
   overflow: hidden;
 }
 
-.stopSience:focus-within,
-.stopSience:active {
+.stopSince:focus-within,
+.stopSince:active {
   box-shadow: var(--inset-shadow);
   background-position: 110% center;
 }
 
-.stopSience_text,
-.stopSience_date {
+.stopSince_text,
+.stopSince_date {
   position: relative;
   opacity: 1;
   transition: opacity 0.4s linear, bottom 0.4s ease-in-out, top 0.4s ease-in-out;
 }
 
-.stopSience_text {
+.stopSince_text {
   font-size: 1.4rem;
   font-weight: 600;
   pointer-events: none;
@@ -166,20 +166,20 @@ h1 {
   color: var(--color-super-strong-secondary);
 }
 
-.stopSience_date {
+.stopSince_date {
   font-size: 1.8rem;
   color: var(--color-strong-secondary);
   pointer-events: none;
   bottom: 0;
 }
 
-.stopSience_input {
+.stopSince_input {
   transition: opacity 0.4s linear;
   opacity: 0;
 }
 
 @media screen and (min-width: 400px) {
-  .stopSience:focus-within > .stopSience_input {
+  .stopSince:focus-within > .stopSince_input {
     border: none;
     clip: initial;
     height: auto;
@@ -193,16 +193,16 @@ h1 {
     opacity: 1;
   }
 
-  .stopSience:focus-within > .stopSience_text,
-  .stopSience:focus-within > .stopSience_date {
+  .stopSince:focus-within > .stopSince_text,
+  .stopSince:focus-within > .stopSince_date {
     opacity: 0;
   }
 
-  .stopSience:focus-within > .stopSience_text {
+  .stopSince:focus-within > .stopSince_text {
     top: -4rem;
   }
 
-  .stopSience:focus-within > .stopSience_date {
+  .stopSince:focus-within > .stopSince_date {
     bottom: -4rem;
   }
 }
