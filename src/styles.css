@@ -185,13 +185,13 @@ h1 {
 .stopSince_input {
   transition: opacity 0.4s linear;
   opacity: 0;
+  font-size: 2rem;
 }
 
 @media screen and (min-width: 400px) {
   .stopSince:focus-within > .stopSince_input {
     border: none;
     clip: initial;
-    height: auto;
     margin: 0;
     overflow: initial;
     padding: 0;
@@ -200,6 +200,7 @@ h1 {
     display: block;
     font-size: 1.8rem;
     opacity: 1;
+    background: none;
   }
 
   .stopSince:focus-within > .stopSince_text,
