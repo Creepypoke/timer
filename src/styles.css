@@ -42,7 +42,7 @@ body {
 
 html,
 body,
-body > div {
+.main {
   min-height: 100%;
   font-family: sans-serif;
   padding: 0;
@@ -55,6 +55,7 @@ body {
 }
 
 .main {
+  position: relative;
   max-width: 375px;
   margin: auto;
   padding: 24px;
@@ -95,6 +96,54 @@ h1 {
   100% {
     background-color: var(--color-super-strong-secondary);
   }
+}
+
+.navigation {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  box-shadow: var(--bump-shadow);
+  height: 4rem;
+}
+
+.navigation__list {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  height: 100%;
+}
+
+.navigation__list__element {
+  padding: 0.4rem 1rem;
+  margin: 0 0.5rem;
+  height: 80%;
+  box-shadow: var(--bump-shadow);
+  border-radius: 16px;
+}
+
+.navigation__list__element.active {
+  box-shadow: var(--inset-shadow);
+}
+
+.navigation__list__element_link {
+  display: block;
+  height: 100%;
+  padding: 0.4rem 0;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  background-color: var(--color-super-strong-secondary);
+  color: transparent;
+  text-shadow: 1px 1px 4px var(--color-pale-primary);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  font-weight: 800;
 }
 
 .timer {

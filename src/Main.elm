@@ -1,9 +1,10 @@
 module Main exposing (Model, Msg(..), init, main, subscriptions, update, view)
 
 import Browser
+import Browser.Navigation as Nav
 import Duration
 import Html exposing (..)
-import Html.Attributes exposing (class, placeholder, type_, value)
+import Html.Attributes exposing (class, href, placeholder, type_, value)
 import Html.Events exposing (onInput)
 import Iso8601
 import PortMain
@@ -11,6 +12,7 @@ import Result
 import Round
 import Task
 import Time
+import Url
 
 
 
@@ -18,11 +20,13 @@ import Time
 
 
 main =
-    Browser.element
+    Browser.application
         { init = init
-        , view = view
-        , update = update
+        , onUrlChange = UrlChanged
+        , onUrlRequest = LinkClicked
         , subscriptions = subscriptions
+        , update = update
+        , view = view
         }
 
 
@@ -31,7 +35,9 @@ main =
 
 
 type alias Model =
-    { zone : Time.Zone
+    { key : Nav.Key
+    , url : Url.Url
+    , zone : Time.Zone
     , time : Time.Posix
     , smokeFreeTimestamp : Time.Posix -- 22 Jan 2020 18:00
     }
@@ -42,15 +48,15 @@ millisPerCigarette =
     Time.millisToPosix 4320000
 
 
-init : Maybe Int -> ( Model, Cmd Msg )
-init flag =
+init : Maybe Int -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init flag url key =
     let
         verifiedInitDate =
             flag
                 |> Maybe.withDefault 1579705200000
                 |> Time.millisToPosix
     in
-    ( Model Time.utc verifiedInitDate verifiedInitDate
+    ( Model key url Time.utc verifiedInitDate verifiedInitDate
     , Task.perform AdjustTimeZone Time.here
     )
 
@@ -63,11 +69,26 @@ type Msg
     = Tick Time.Posix
     | AdjustTimeZone Time.Zone
     | Change String
+    | LinkClicked Browser.UrlRequest
+    | UrlChanged Url.Url
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        LinkClicked urlRequest ->
+            case urlRequest of
+                Browser.Internal url ->
+                    ( model, Nav.pushUrl model.key (Url.toString url) )
+
+                Browser.External href ->
+                    ( model, Nav.load href )
+
+        UrlChanged url ->
+            ( { model | url = url }
+            , Cmd.none
+            )
+
         Tick newTime ->
             ( { model | time = newTime }
             , Cmd.none
@@ -111,13 +132,88 @@ getCigarettes time smokeFreeTimestamp =
         |> (\t -> t / (millisPerCigarette |> Time.posixToMillis |> toFloat))
 
 
-toStringIso8601WithoutTime : Time.Posix -> String
-toStringIso8601WithoutTime time =
-    time
-        |> Iso8601.fromTime
-        |> String.split "T"
-        |> List.head
-        |> Maybe.withDefault ""
+view : Model -> Browser.Document Msg
+view model =
+    let
+        headerPart =
+            [ navigationMenu model.url
+            , h1 [] [ text "Best timer" ]
+            ]
+
+        bodyPart =
+            if model.url.path == "/" then
+                viewMain model
+
+            else
+                viewSettings model
+    in
+    { title = "Best Timer"
+    , body =
+        [ div [ class "main" ]
+            (List.concat
+                [ headerPart, bodyPart ]
+            )
+        ]
+    }
+
+
+viewMain : Model -> List (Html Msg)
+viewMain model =
+    [ viewTimer model.time model.smokeFreeTimestamp
+    , timerInput model.zone model.smokeFreeTimestamp
+    , viewAdditionalBlock model.time model.smokeFreeTimestamp
+    ]
+
+
+viewSettings : Model -> List (Html Msg)
+viewSettings model =
+    [ h2 [] [ text "Settings" ]
+    ]
+
+
+type RouteName
+    = Home
+    | Settings
+
+
+type alias Route =
+    { name : RouteName
+    , path : String
+    }
+
+
+routesList =
+    [ Route Home "/"
+    , Route Settings "/settings"
+    ]
+
+
+activeRoute : Url.Url -> String -> Bool
+activeRoute url path =
+    url.path == path
+
+
+navigationMenu : Url.Url -> Html Msg
+navigationMenu currentUrl =
+    nav [ class "navigation" ]
+        [ ul [ class "navigation__list" ]
+            [ navigationElement "/" "Main" (activeRoute currentUrl "/")
+            , navigationElement "/settings" "Settings" (activeRoute currentUrl "/settings")
+            ]
+        ]
+
+
+navigationElement : String -> String -> Bool -> Html Msg
+navigationElement path label active =
+    let
+        className =
+            if active then
+                "navigation__list__element active"
+
+            else
+                "navigation__list__element"
+    in
+    li [ class className ] [ a [ class "navigation__list__element_link", href path ] [ text label ] ]
 
 
 toPrettyMonth : Time.Month -> String
@@ -160,33 +256,37 @@ toPrettyMonth month =
             "December 🎄"
 
 
-view : Model -> Html Msg
-view model =
+toStringIso8601WithoutTime : Time.Posix -> String
+toStringIso8601WithoutTime time =
+    time
+        |> Iso8601.fromTime
+        |> String.split "T"
+        |> List.head
+        |> Maybe.withDefault ""
+
+
+timerInput : Time.Zone -> Time.Posix -> Html Msg
+timerInput zone smokeFreeTimestamp =
     let
         isoDateSmokeFree =
-            toStringIso8601WithoutTime model.smokeFreeTimestamp
+            toStringIso8601WithoutTime smokeFreeTimestamp
 
         smokeFreeYear =
-            model.smokeFreeTimestamp |> Time.toYear model.zone |> String.fromInt
+            smokeFreeTimestamp |> Time.toYear zone |> String.fromInt
 
         smokeFreeMonth =
-            model.smokeFreeTimestamp |> Time.toMonth model.zone |> toPrettyMonth
+            smokeFreeTimestamp |> Time.toMonth zone |> toPrettyMonth
 
         smokeFreeDays =
-            model.smokeFreeTimestamp |> Time.toDay model.zone |> String.fromInt
+            smokeFreeTimestamp |> Time.toDay zone |> String.fromInt
 
         prettyDateSmokeFree =
             smokeFreeYear ++ " " ++ smokeFreeMonth ++ " " ++ smokeFreeDays
     in
-    div [ class "main" ]
-        [ h1 [] [ text "Best timer" ]
-        , viewTimer model.time model.smokeFreeTimestamp
-        , label [ class "stopSince" ]
-            [ div [ class "stopSince_text" ] [ text "🚭 since: " ]
-            , input [ class "stopSince_input invisible", placeholder "Text to reverse", value isoDateSmokeFree, onInput Change, type_ "date" ] []
-            , div [ class "stopSince_date" ] [ text prettyDateSmokeFree ]
-            ]
-        , viewAdditionalBlock model.time model.smokeFreeTimestamp
+    label [ class "stopSince" ]
+        [ div [ class "stopSince_text" ] [ text "🚭 since: " ]
+        , input [ class "stopSince_input invisible", placeholder "Text to reverse", value isoDateSmokeFree, onInput Change, type_ "date" ] []
+        , div [ class "stopSince_date" ] [ text prettyDateSmokeFree ]
         ]
 
 
